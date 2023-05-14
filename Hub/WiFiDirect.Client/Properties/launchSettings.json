@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WiFiDirect.Client (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WiFiDirect.Client (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

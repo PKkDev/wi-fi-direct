@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WiFiDirect.Hub (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WiFiDirect.Hub (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
