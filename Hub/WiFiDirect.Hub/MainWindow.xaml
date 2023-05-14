@@ -7,11 +7,36 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Orientation="Vertical" Margin="10" Spacing="10">
 
-        <Button x:Name="StartBtn" Click="StartBtn_Click">Start</Button>
+        <StackPanel Orientation="Horizontal" Spacing="15">
 
-        <Button x:Name="StopBtn" Click="StopBtn_Click">Stop</Button>
+            <Button x:Name="StartBtn" Click="StartBtn_Click">Start</Button>
+
+            <Button x:Name="StopBtn" Click="StopBtn_Click">Stop</Button>
+
+        </StackPanel>
+
+        <ScrollViewer>
+            <ListBox 
+                x:Name="lvConnectedDevices" 
+                HorizontalAlignment="Left" 
+                Height="134" Width="314"
+                DisplayMemberPath="DisplayName"
+                SelectionMode="Single"
+                ItemsSource="{x:Bind ConnectedDevices, Mode=OneWay}">
+            </ListBox>
+        </ScrollViewer>
+
+        <Button x:Name="CloseDeviceBtn" Content="Close" Click="CloseDeviceBtn_Click"/>
+
+        <StackPanel Orientation="Horizontal" Spacing="15">
+
+            <TextBox x:Name="SendMessageTxt" PlaceholderText="message" Width="200"/>
+
+            <Button x:Name="SendMessageBtn" Content="Send" Click="SendMessageBtn_Click"/>
+
+        </StackPanel>
 
     </StackPanel>
 
