@@ -1,41 +1,22 @@
 using Microsoft.UI.Xaml;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using WiFiDirect.Shared;
 using Windows.Devices.Enumeration;
-using Windows.UI.Core;
 
 namespace WiFiDirect.Client
 {
-    public class DiscoveredDevice : INotifyPropertyChanged
-    {
-        public DeviceInformation DeviceInfo { get; private set; }
-
-        public DiscoveredDevice(DeviceInformation deviceInfo)
-        {
-            DeviceInfo = deviceInfo;
-        }
-
-        public string DisplayName => DeviceInfo.Name + " - " + (DeviceInfo.Pairing.IsPaired ? "Paired" : "Unpaired");
-        public override string ToString() => DisplayName;
-
-        public void UpdateDeviceInfo(DeviceInformationUpdate update)
-        {
-            DeviceInfo.Update(update);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisplayName"));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
-
     public sealed partial class MainWindow : Window
     {
         DeviceWatcher _deviceWatcher = null;
+
         public ObservableCollection<DiscoveredDevice> DiscoveredDevices { get; set; }
+        public ObservableCollection<ConnectedDevice> ConnectedDevices { get; set; }
 
         public MainWindow()
         {
             DiscoveredDevices = new();
+            ConnectedDevices = new();
 
             InitializeComponent();
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Devices.WiFiDirect;
 
-namespace WiFiDirect.Hub
+namespace WiFiDirect.Shared
 {
     public class ConnectedDevice : IDisposable
     {

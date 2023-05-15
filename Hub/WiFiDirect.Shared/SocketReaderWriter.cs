@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 
-namespace WiFiDirect.Hub
+namespace WiFiDirect.Shared
 {
     public class SocketReaderWriter : IDisposable
     {
@@ -14,11 +14,11 @@ namespace WiFiDirect.Hub
         public SocketReaderWriter(StreamSocket socket)
         {
             _dataReader = new DataReader(socket.InputStream);
-            _dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
+            _dataReader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
             _dataReader.ByteOrder = ByteOrder.LittleEndian;
 
             _dataWriter = new DataWriter(socket.OutputStream);
-            _dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
+            _dataWriter.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
             _dataWriter.ByteOrder = ByteOrder.LittleEndian;
 
             _streamSocket = socket;
