@@ -1,8 +1,14 @@
 using Microsoft.UI.Xaml;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using WiFiDirect.Shared;
 using Windows.Devices.Enumeration;
+using Windows.Devices.WiFiDirect;
+using Windows.Networking.Sockets;
+using Windows.Networking;
+using System.IO;
 
 namespace WiFiDirect.Client
 {
@@ -106,5 +112,117 @@ namespace WiFiDirect.Client
         }
 
         #endregion DeviceWatcherEvents
+
+        private readonly string strServerPort = "50001";
+        private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var discoveredDevice = (DiscoveredDevice)lvDiscoveredDevices.SelectedItem;
+
+            if (discoveredDevice == null) return;
+
+
+            if (!discoveredDevice.DeviceInfo.Pairing.IsPaired)
+            {
+                if (!await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing))
+                {
+                    return;
+                }
+            }
+
+            WiFiDirectDevice wfdDevice = null;
+            try
+            {
+                // IMPORTANT: FromIdAsync needs to be called from the UI thread
+                wfdDevice = await WiFiDirectDevice.FromIdAsync(discoveredDevice.DeviceInfo.Id);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+
+            // Register for the ConnectionStatusChanged event handler
+            wfdDevice.ConnectionStatusChanged += OnConnectionStatusChanged;
+
+            IReadOnlyList<EndpointPair> endpointPairs = wfdDevice.GetConnectionEndpointPairs();
+            HostName remoteHostName = endpointPairs[0].RemoteHostName;
+
+            // Wait for server to start listening on a socket
+            await Task.Delay(2000);
+
+            // Connect to Advertiser on L4 layer
+            StreamSocket clientSocket = new StreamSocket();
+            try
+            {
+                await clientSocket.ConnectAsync(remoteHostName, strServerPort);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            SocketReaderWriter socketRW = new SocketReaderWriter(clientSocket);
+
+            string sessionId = Path.GetRandomFileName();
+            ConnectedDevice connectedDevice = new ConnectedDevice(sessionId, wfdDevice, socketRW);
+            ConnectedDevices.Add(connectedDevice);
+
+            // The first message sent over the socket is the name of the connection.
+            await socketRW.WriteMessageAsync(sessionId);
+
+            while (await socketRW.ReadMessageAsync() != null)
+            {
+                // Keep reading messages
+            }
+        }
+        private void OnConnectionStatusChanged(WiFiDirectDevice sender, object arg)
+        {
+            if (sender.ConnectionStatus == WiFiDirectConnectionStatus.Disconnected)
+            {
+                // TODO: Should we remove this connection from the list?
+                // (Yes, probably.)
+            }
+        }
+        private async Task<bool> RequestPairDeviceAsync(DeviceInformationPairing pairing)
+        {
+            WiFiDirectConnectionParameters connectionParams = new();
+            DeviceInformationCustomPairing customPairing = pairing.Custom;
+
+            DevicePairingKinds devicePairingKinds = DevicePairingKinds.None;
+
+            // If specific configuration methods were not added, then we'll use these pairing kinds.
+            devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
+
+            DevicePairingResult result = await customPairing.PairAsync(
+                devicePairingKinds,
+                DevicePairingProtectionLevel.Default,
+                connectionParams);
+            if (result.Status != DevicePairingResultStatus.Paired)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async void SendMessageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var connectedDevice = (ConnectedDevice)lvConnectedDevices.SelectedItem;
+            if (connectedDevice == null)
+            {
+                await connectedDevice.SocketRW.WriteMessageAsync(SendMessageTxt.Text);
+            }
+        }
+
+        private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var connectedDevice = (ConnectedDevice)lvConnectedDevices.SelectedItem;
+            if (connectedDevice == null)
+            {
+                ConnectedDevices.Remove(connectedDevice);
+
+                // Close socket and WiFiDirect object
+                connectedDevice.Dispose();
+            }
+        }
     }
 }

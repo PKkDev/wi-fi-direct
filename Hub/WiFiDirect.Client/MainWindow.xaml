@@ -7,12 +7,53 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
 
-        <Button x:Name="StartBtn" Click="StartBtn_Click">Start</Button>
+        <StackPanel>
 
-        <Button x:Name="StopBtn" Click="StopBtn_Click">Stop</Button>
-        
+            <ListBox 
+                Name="lvDiscoveredDevices" 
+                Height="200" Width="350"
+                ItemsSource="{x:Bind DiscoveredDevices}" DisplayMemberPath="DisplayName"
+                SelectionMode="Single"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="15">
+
+                <Button x:Name="ConnectBtn" Click="ConnectBtn_Click">Connect</Button>
+
+                <Button x:Name="DisconnectBtn" Click="DisconnectBtn_Click">Disconnect</Button>
+
+            </StackPanel>
+
+        </StackPanel>
+
+
+        <StackPanel>
+
+            <ListView 
+                Name="lvConnectedDevices" 
+                Height="200" Width="350"
+                ItemsSource="{x:Bind ConnectedDevices}" DisplayMemberPath="DisplayName"
+                SelectionMode="Single"/>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+
+            <Button x:Name="StartBtn" Click="StartBtn_Click">Start</Button>
+
+            <Button x:Name="StopBtn" Click="StopBtn_Click">Stop</Button>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="15">
+
+            <TextBox x:Name="SendMessageTxt" PlaceholderText="message" Width="200"/>
+
+            <Button x:Name="SendMessageBtn" Content="Send" Click="SendMessageBtn_Click"/>
+
+        </StackPanel>
+
     </StackPanel>
     
 </Window>

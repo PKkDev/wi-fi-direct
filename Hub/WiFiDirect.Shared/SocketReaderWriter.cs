@@ -31,6 +31,19 @@ namespace WiFiDirect.Shared
             _streamSocket.Dispose();
         }
 
+        public async Task WriteMessageAsync(string message)
+        {
+            try
+            {
+                _dataWriter.WriteUInt32(_dataWriter.MeasureString(message));
+                _dataWriter.WriteString(message);
+                await _dataWriter.StoreAsync();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         public async Task<string> ReadMessageAsync()
         {
             try
