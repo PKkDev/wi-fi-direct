@@ -35,7 +35,7 @@ namespace WiFiDirect.Hub
             AddWiFiDirectInformationElement("tetElement");
         }
 
-        private void StartBtn_Click(object sender, RoutedEventArgs e)
+        private async void StartBtn_Click(object sender, RoutedEventArgs e)
         {
             _listener = new WiFiDirectConnectionListener();
 
@@ -126,6 +126,9 @@ namespace WiFiDirect.Hub
             if (isPaired || _publisher.Advertisement.LegacySettings.IsEnabled)
             {
                 var messageDialog = new MessageDialog($"Connection request received from {deviceName}", "Connection Request");
+
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+                WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
 
                 // Add two commands, distinguished by their tag.
                 // The default command is "Decline", and if the user cancels, we treat it as "Decline".

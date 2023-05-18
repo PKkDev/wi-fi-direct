@@ -7,7 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+    <StackPanel Orientation="Vertical" Margin="10" Spacing="10">
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+
+            <Button x:Name="StartBtn" Click="StartBtn_Click">Start</Button>
+
+            <Button x:Name="StopBtn" Click="StopBtn_Click">Stop</Button>
+
+        </StackPanel>
 
         <StackPanel>
 
@@ -38,14 +46,6 @@
 
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Spacing="10">
-
-            <Button x:Name="StartBtn" Click="StartBtn_Click">Start</Button>
-
-            <Button x:Name="StopBtn" Click="StopBtn_Click">Stop</Button>
-
-        </StackPanel>
-
         <StackPanel Orientation="Horizontal" Spacing="15">
 
             <TextBox x:Name="SendMessageTxt" PlaceholderText="message" Width="200"/>
@@ -55,5 +55,5 @@
         </StackPanel>
 
     </StackPanel>
-    
+
 </Window>

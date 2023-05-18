@@ -31,10 +31,9 @@ namespace WiFiDirect.Client
         {
             DiscoveredDevices.Clear();
 
-            // AssociationEndpoint
-            string deviceSelector = "System.Devices.DevObjectType:=5 AND System.Devices.Aep.ProtocolId:=\"{0407d24e-53de-4c9a-9ba1-9ced54641188}\" AND System.Devices.Aep.IsPresent:=System.StructuredQueryType.Boolean#True";
-            // DeviceInterface
-            //string deviceSelector = "System.Devices.InterfaceClassGuid:=\"{439B20AF-8955-405B-99F0-A62AF0C68D43}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
+            string deviceSelector = WiFiDirectDevice.GetDeviceSelector(WiFiDirectDeviceSelectorType.AssociationEndpoint);
+            //string deviceSelector = WiFiDirectDevice.GetDeviceSelector(WiFiDirectDeviceSelectorType.DeviceInterface);
+
             _deviceWatcher = DeviceInformation.CreateWatcher(
                 deviceSelector,
                 new string[] { "System.Devices.WiFiDirect.InformationElements" });
@@ -135,7 +134,7 @@ namespace WiFiDirect.Client
                 // IMPORTANT: FromIdAsync needs to be called from the UI thread
                 wfdDevice = await WiFiDirectDevice.FromIdAsync(discoveredDevice.DeviceInfo.Id);
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException e)
             {
                 return;
             }
@@ -204,15 +203,6 @@ namespace WiFiDirect.Client
             return true;
         }
 
-        private async void SendMessageBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var connectedDevice = (ConnectedDevice)lvConnectedDevices.SelectedItem;
-            if (connectedDevice == null)
-            {
-                await connectedDevice.SocketRW.WriteMessageAsync(SendMessageTxt.Text);
-            }
-        }
-
         private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
         {
             var connectedDevice = (ConnectedDevice)lvConnectedDevices.SelectedItem;
@@ -222,6 +212,15 @@ namespace WiFiDirect.Client
 
                 // Close socket and WiFiDirect object
                 connectedDevice.Dispose();
+            }
+        }
+
+        private async void SendMessageBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var connectedDevice = (ConnectedDevice)lvConnectedDevices.SelectedItem;
+            if (connectedDevice == null)
+            {
+                await connectedDevice.SocketRW.WriteMessageAsync(SendMessageTxt.Text);
             }
         }
     }

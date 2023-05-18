@@ -2,25 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using WinUIEx;
 
 namespace WiFiDirect.Client
 {
@@ -29,6 +11,8 @@ namespace WiFiDirect.Client
     /// </summary>
     public partial class App : Application
     {
+        private Window m_window;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -45,9 +29,11 @@ namespace WiFiDirect.Client
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+
+            m_window.SetIsResizable(false);
+            m_window.SetWindowSize(500, 400);
+
             m_window.Activate();
         }
-
-        private Window m_window;
     }
 }
