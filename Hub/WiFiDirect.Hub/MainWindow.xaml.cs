@@ -237,7 +237,7 @@ namespace WiFiDirect.Hub
         }
         private void OnSocketConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
-            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            var task = DispatcherQueue.TryEnqueue(async () =>
             {
                 StreamSocket serverSocket = args.Socket;
 

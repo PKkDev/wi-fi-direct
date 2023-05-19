@@ -122,7 +122,14 @@ namespace WiFiDirect.Client
 
             if (!discoveredDevice.DeviceInfo.Pairing.IsPaired)
             {
-                if (!await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing))
+                var check = false;
+                Task t = Task.Run(async () =>
+                {
+                    check = await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing);
+                });
+                t.Wait();
+
+                if (!check)
                 {
                     return;
                 }
@@ -134,7 +141,11 @@ namespace WiFiDirect.Client
                 // IMPORTANT: FromIdAsync needs to be called from the UI thread
                 wfdDevice = await WiFiDirectDevice.FromIdAsync(discoveredDevice.DeviceInfo.Id);
             }
-            catch (TaskCanceledException e)
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+            catch (Exception ex)
             {
                 return;
             }
