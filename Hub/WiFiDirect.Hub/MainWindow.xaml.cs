@@ -53,7 +53,7 @@ namespace WiFiDirect.Hub
 
             #region Legacy settings HostPot
 
-            _publisher.Advertisement.IsAutonomousGroupOwnerEnabled = true;
+            _publisher.Advertisement.IsAutonomousGroupOwnerEnabled = false;
 
             // Legacy settings are meaningful only if IsAutonomousGroupOwnerEnabled is true.
             if (_publisher.Advertisement.IsAutonomousGroupOwnerEnabled)
@@ -216,12 +216,14 @@ namespace WiFiDirect.Hub
         private async Task<bool> RequestPairDeviceAsync(DeviceInformationPairing pairing)
         {
             WiFiDirectConnectionParameters connectionParams = new();
+            connectionParams.GroupOwnerIntent = 1;
+
             DeviceInformationCustomPairing customPairing = pairing.Custom;
 
             DevicePairingKinds devicePairingKinds = DevicePairingKinds.None;
 
             // If specific configuration methods were not added, then we'll use these pairing kinds.
-            //devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
+            // devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
             devicePairingKinds = DevicePairingKinds.ConfirmOnly;
 
             connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.GroupOwnerNegotiation;

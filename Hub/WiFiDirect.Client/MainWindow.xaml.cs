@@ -120,12 +120,12 @@ namespace WiFiDirect.Client
 
             if (!discoveredDevice.DeviceInfo.Pairing.IsPaired)
             {
-                var check = false;
-                Task t = Task.Run(async () =>
-                check = await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing));
-                t.Wait();
+                //var check = false;
+                //Task t = Task.Run(async () =>
+                //check = );
+                //t.Wait();
 
-                if (!check)
+                if (!await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing))
                 {
                     return;
                 }
@@ -191,6 +191,8 @@ namespace WiFiDirect.Client
         private async Task<bool> RequestPairDeviceAsync(DeviceInformationPairing pairing)
         {
             WiFiDirectConnectionParameters connectionParams = new();
+            connectionParams.GroupOwnerIntent = 1;
+
             DeviceInformationCustomPairing customPairing = pairing.Custom;
 
             DevicePairingKinds devicePairingKinds = DevicePairingKinds.None;
