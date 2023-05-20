@@ -197,7 +197,8 @@ namespace WiFiDirect.Client
             DevicePairingKinds devicePairingKinds = DevicePairingKinds.None;
 
             // If specific configuration methods were not added, then we'll use these pairing kinds.
-            devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
+            //devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
+            devicePairingKinds = DevicePairingKinds.ConfirmOnly;
 
             connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.GroupOwnerNegotiation;
             //connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
