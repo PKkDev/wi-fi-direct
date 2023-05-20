@@ -119,14 +119,11 @@ namespace WiFiDirect.Client
 
             if (discoveredDevice == null) return;
 
-
             if (!discoveredDevice.DeviceInfo.Pairing.IsPaired)
             {
                 var check = false;
                 Task t = Task.Run(async () =>
-                {
-                    check = await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing);
-                });
+                check = await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing));
                 t.Wait();
 
                 if (!check)
@@ -202,10 +199,20 @@ namespace WiFiDirect.Client
             // If specific configuration methods were not added, then we'll use these pairing kinds.
             devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
 
+            connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.GroupOwnerNegotiation;
+            //connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
+
+            customPairing.PairingRequested +=
+                (DeviceInformationCustomPairing sender, DevicePairingRequestedEventArgs args) =>
+                {
+                    Utils.HandlePairing(DispatcherQueue, args);
+                };
+
             DevicePairingResult result = await customPairing.PairAsync(
-                devicePairingKinds,
-                DevicePairingProtectionLevel.Default,
-                connectionParams);
+                 devicePairingKinds,
+                 DevicePairingProtectionLevel.Default,
+                 connectionParams);
+
             if (result.Status != DevicePairingResultStatus.Paired)
             {
                 return false;

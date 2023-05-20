@@ -224,6 +224,15 @@ namespace WiFiDirect.Hub
             // If specific configuration methods were not added, then we'll use these pairing kinds.
             devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
 
+            connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.GroupOwnerNegotiation;
+            //connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
+
+            customPairing.PairingRequested +=
+                (DeviceInformationCustomPairing sender, DevicePairingRequestedEventArgs args) =>
+                {
+                    Utils.HandlePairing(DispatcherQueue, args);
+                };
+
             DevicePairingResult result = await customPairing.PairAsync(
                 devicePairingKinds,
                 DevicePairingProtectionLevel.Default,
