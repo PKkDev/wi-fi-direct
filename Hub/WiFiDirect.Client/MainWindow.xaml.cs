@@ -112,7 +112,6 @@ namespace WiFiDirect.Client
 
         #endregion DeviceWatcherEvents
 
-        private readonly string strServerPort = "50001";
         private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
         {
             var discoveredDevice = (DiscoveredDevice)lvDiscoveredDevices.SelectedItem;
@@ -160,7 +159,7 @@ namespace WiFiDirect.Client
             StreamSocket clientSocket = new StreamSocket();
             try
             {
-                await clientSocket.ConnectAsync(remoteHostName, strServerPort);
+                await clientSocket.ConnectAsync(remoteHostName, Utils.strServerPort);
             }
             catch (Exception ex)
             {

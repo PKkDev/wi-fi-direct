@@ -114,7 +114,6 @@ namespace WiFiDirect.Hub
             });
         }
 
-        private readonly string strServerPort = "50001";
         private async Task<bool> HandleConnectionRequestAsync(WiFiDirectConnectionRequest connectionRequest)
         {
             string deviceName = connectionRequest.DeviceInformation.Name;
@@ -181,7 +180,7 @@ namespace WiFiDirect.Hub
             listenerSocket.ConnectionReceived += OnSocketConnectionReceived;
             try
             {
-                await listenerSocket.BindEndpointAsync(EndpointPairs[0].LocalHostName, strServerPort);
+                await listenerSocket.BindEndpointAsync(EndpointPairs[0].LocalHostName, Utils.strServerPort);
             }
             catch (Exception ex)
             {
@@ -308,11 +307,6 @@ namespace WiFiDirect.Hub
             }
         }
 
-        // WARNING! This custom OUI is for demonstration purposes only.
-        // OUI values are assigned by the IEEE Registration Authority.
-        // Replace this custom OUI with the value assigned to your organization.
-        private readonly byte[] CustomOui = { 0xAA, 0xBB, 0xCC };
-        private readonly byte CustomOuiType = 0xDD;
         private void AddWiFiDirectInformationElement(string txtInformationElement)
         {
             WiFiDirectInformationElement informationElement = new WiFiDirectInformationElement();
@@ -326,10 +320,10 @@ namespace WiFiDirect.Hub
             informationElement.Value = dataWriter.DetachBuffer();
 
             // Organizational unit identifier (OUI)
-            informationElement.Oui = CryptographicBuffer.CreateFromByteArray(CustomOui);
+            informationElement.Oui = CryptographicBuffer.CreateFromByteArray(Utils.CustomOui);
 
             // OUI Type
-            informationElement.OuiType = CustomOuiType;
+            informationElement.OuiType = Utils.CustomOuiType;
 
             // Save this information element so we can add it when we advertise.
             _informationElements.Add(informationElement);

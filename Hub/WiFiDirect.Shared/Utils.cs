@@ -14,6 +14,14 @@ namespace WiFiDirect.Shared
 {
     public static class Utils
     {
+        // WARNING! This custom OUI is for demonstration purposes only.
+        // OUI values are assigned by the IEEE Registration Authority.
+        // Replace this custom OUI with the value assigned to your organization.
+        public static readonly byte[] CustomOui = { 0xAA, 0xBB, 0xCC };
+        public static readonly byte CustomOuiType = 0xDD;
+
+        public static readonly string strServerPort = "50001";
+
         private static async Task ShowPinToUserAsync(DispatcherQueue dispatcher, string strPin)
         {
             //await dispatcher.TryEnqueue(async () =>
