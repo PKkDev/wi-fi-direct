@@ -24,6 +24,7 @@ namespace WiFiDirect.Shared
 
         private static async Task ShowPinToUserAsync(DispatcherQueue dispatcher, string strPin)
         {
+            var pinCOde = strPin;
             //await dispatcher.TryEnqueue(async () =>
             //{
             //    var messageDialog = new MessageDialog($"Enter this PIN on the remote device: {strPin}");

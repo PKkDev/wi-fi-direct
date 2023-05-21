@@ -11,7 +11,6 @@ using Windows.Networking.Sockets;
 using Windows.Security.Credentials;
 using Windows.Security.Cryptography;
 using Windows.Storage.Streams;
-using Windows.UI.Core;
 using Windows.UI.Popups;
 
 namespace WiFiDirect.Hub
@@ -32,7 +31,7 @@ namespace WiFiDirect.Hub
             InitializeComponent();
 
             _informationElements = new();
-            AddWiFiDirectInformationElement("tetElement");
+            //AddWiFiDirectInformationElement("testElement");
         }
 
         private async void StartBtn_Click(object sender, RoutedEventArgs e)
@@ -149,7 +148,6 @@ namespace WiFiDirect.Hub
             if (!isPaired && !_publisher.Advertisement.LegacySettings.IsEnabled)
             {
                 var requestPairing = connectionRequest.DeviceInformation.Pairing;
-
                 if (!await RequestPairDeviceAsync(requestPairing))
                 {
                     return false;
@@ -216,18 +214,18 @@ namespace WiFiDirect.Hub
         private async Task<bool> RequestPairDeviceAsync(DeviceInformationPairing pairing)
         {
             WiFiDirectConnectionParameters connectionParams = new();
-            connectionParams.GroupOwnerIntent = 1;
-
-            DeviceInformationCustomPairing customPairing = pairing.Custom;
+            //connectionParams.GroupOwnerIntent = 1;
 
             DevicePairingKinds devicePairingKinds = DevicePairingKinds.None;
 
             // If specific configuration methods were not added, then we'll use these pairing kinds.
-            // devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
-            devicePairingKinds = DevicePairingKinds.ConfirmOnly;
+            devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
+            // devicePairingKinds = DevicePairingKinds.ConfirmOnly;
 
             connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.GroupOwnerNegotiation;
-            //connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
+            // connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
+
+            DeviceInformationCustomPairing customPairing = pairing.Custom;
 
             customPairing.PairingRequested +=
                 (DeviceInformationCustomPairing sender, DevicePairingRequestedEventArgs args) =>
@@ -239,6 +237,7 @@ namespace WiFiDirect.Hub
                 devicePairingKinds,
                 DevicePairingProtectionLevel.Default,
                 connectionParams);
+
             if (result.Status != DevicePairingResultStatus.Paired)
             {
                 return false;

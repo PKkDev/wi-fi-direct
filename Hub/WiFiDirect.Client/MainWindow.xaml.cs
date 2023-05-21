@@ -120,11 +120,6 @@ namespace WiFiDirect.Client
 
             if (!discoveredDevice.DeviceInfo.Pairing.IsPaired)
             {
-                //var check = false;
-                //Task t = Task.Run(async () =>
-                //check = );
-                //t.Wait();
-
                 if (!await RequestPairDeviceAsync(discoveredDevice.DeviceInfo.Pairing))
                 {
                     return;
@@ -191,18 +186,18 @@ namespace WiFiDirect.Client
         private async Task<bool> RequestPairDeviceAsync(DeviceInformationPairing pairing)
         {
             WiFiDirectConnectionParameters connectionParams = new();
-            connectionParams.GroupOwnerIntent = 1;
-
-            DeviceInformationCustomPairing customPairing = pairing.Custom;
+            //connectionParams.GroupOwnerIntent = 1;
 
             DevicePairingKinds devicePairingKinds = DevicePairingKinds.None;
 
             // If specific configuration methods were not added, then we'll use these pairing kinds.
-            //devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
-            devicePairingKinds = DevicePairingKinds.ConfirmOnly;
+            devicePairingKinds = DevicePairingKinds.ConfirmOnly | DevicePairingKinds.DisplayPin | DevicePairingKinds.ProvidePin;
+            //devicePairingKinds = DevicePairingKinds.ConfirmOnly;
 
             connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.GroupOwnerNegotiation;
-            //connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
+            // connectionParams.PreferredPairingProcedure = WiFiDirectPairingProcedure.Invitation;
+
+            DeviceInformationCustomPairing customPairing = pairing.Custom;
 
             customPairing.PairingRequested +=
                 (DeviceInformationCustomPairing sender, DevicePairingRequestedEventArgs args) =>
@@ -211,9 +206,9 @@ namespace WiFiDirect.Client
                 };
 
             DevicePairingResult result = await customPairing.PairAsync(
-                 devicePairingKinds,
-                 DevicePairingProtectionLevel.Default,
-                 connectionParams);
+                devicePairingKinds,
+                DevicePairingProtectionLevel.Default,
+                connectionParams);
 
             if (result.Status != DevicePairingResultStatus.Paired)
             {
